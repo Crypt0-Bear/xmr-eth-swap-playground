@@ -62,23 +62,23 @@ contract Swap{
 
 
   constructor(
-    uint public _timeToLock
+    uint  _timeToLock
     )
     public {
-      alice = msg.sender
-      startBlock = block.number
-      lockTime = _timeToLock
-      deposit = msg.value
+      alice = msg.sender;
+      startBlock = block.number;
+      lockTime = _timeToLock;
+      deposit = msg.value;
     }
 
-function () payable {
+ fallback() payable {
   Receive(msg.value);
   depositBalance += msg.value;
 }
 
 
-function lockContract(string hashed_aK,) public returns (bool){
-  bob = msg.sender
+function lockContract(string hashed_aK) public returns (bool){
+  bob = msg.sender;
   hashed_aK = hashed_aK;
   locked = true;
   return true;
