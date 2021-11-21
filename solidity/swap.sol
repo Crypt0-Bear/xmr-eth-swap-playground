@@ -1,4 +1,6 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.5;
 /*
 __  __
 |  \/  |
@@ -24,8 +26,12 @@ https://twitter.com/Crypt0_Bear
 
 */
 
-import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/math/SafeMath.sol";
-import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/utils/Counters.sol";
+// Not needed above sol 0.8
+// https://ethereum.stackexchange.com/questions/91367/is-the-safemath-library-obsolete-in-solidity-0-8-0
+// import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/math/SafeMath.sol";
+
+// import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  A smart contract for ethereum-monero atomic swaps
@@ -42,7 +48,7 @@ import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/utils/Counters.sol";
 
 contract Swap{
 
-  using SafeMath for uint256;
+//   using SafeMath for uint256;
   using Counters for Counters.Counter;
   Counters.Counter private _swapId;
 
@@ -57,6 +63,8 @@ contract Swap{
   uint public depositBalance;
   event Receive(uint value);
   event Withdraw(string _correct_aK);
+  uint public deposit;
+
 
 
 
@@ -71,15 +79,15 @@ contract Swap{
       deposit = msg.value;
     }
 
- fallback() payable {
+ fallback() external payable {
   Receive(msg.value);
   depositBalance += msg.value;
 }
 
 
-function lockContract(string hashed_aK) public returns (bool){
+function lockContract(string _hashed_aK) public view returns (bool){
   bob = msg.sender;
-  hashed_aK = hashed_aK;
+  hashed_aK = _hashed_aK;
   locked = true;
   return true;
 }
@@ -94,12 +102,12 @@ input for the function
 **/
 function withdraw(string _aK) public returns(bool){
   require (locked == true);
-  require ( sha256(string(_ak)) == hashed_aK);
-  ak = string(_ak);
+  require ( sha256(string(_aK)) == hashed_aK);
+  aK = string(_aK);
   //send eth to the withdrawer
   bob.send(depositBalance);
   //emit event and make it easier for alice to track value of the contract
-  emit Withdraw(ak);
+  emit Withdraw(aK);
 
 
 }
